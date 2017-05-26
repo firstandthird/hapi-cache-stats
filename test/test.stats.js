@@ -15,7 +15,7 @@ lab.beforeEach((done) => {
   server.register({
     register,
     options: {
-      interval: 1000
+      interval: 500
     }
   }, () => {
     done();
@@ -33,11 +33,27 @@ lab.test('will log delayed requests', { timeout: 10000 }, (done) => {
   server.method('add', add, {
     cache: {
       expiresIn: 60000,
-      // expiresAt: '20:30',
       staleIn: 30000,
-      // staleTimeout: 10000,
-      // generateTimeout: 100
+      staleTimeout: 10000,
+      generateTimeout: 100
     }
   });
-  server.stop(done);
+  server.route({
+    method: 'get',
+    path: '/',
+    handler: (request, reply) => {
+      server.methods.add();
+      reply({});
+    }
+  });
+  for (let i = 0; i < 20; i++) {
+    server.inject({
+      method: 'get',
+      url: '/',
+    }, () => {
+    });
+  }
+  setTimeout(() => {
+    done();
+  }, 5000);
 });

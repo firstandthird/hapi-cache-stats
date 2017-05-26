@@ -15,9 +15,16 @@ const log = Logr.createLogger({
   }
 });
 
-exports.register = (server, options, next) => {
-  Object.assign(options, defaults);
+exports.register = (server, passedOptions, next) => {
+  const options = {};
+  Object.assign(options, defaults, passedOptions);
   const logMethod = (methodName, method) => {
+    const stats = method.cache.stats;
+    const logOutput = {
+      hitRatio: stats.hits / stats.gets,
+      staleRatio: stats.stales / stats.gets
+    };
+    Object.assign(logOutput, method.cache.stats);
     log([methodName, 'hapi-cache-stats'], method.cache.stats);
   };
 
