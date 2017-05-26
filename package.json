@@ -1,0 +1,33 @@
+{
+  "name": "hapi-cache-stats",
+  "version": "0.0.1",
+  "description": "Hapi plugin that logs cache stats for server methods at regular intervals",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*.js --cov"
+  },
+  "eslintConfig": {
+    "extends": "firstandthird"
+  },
+  "keywords": [
+    "hapi",
+    "methods",
+    "cache"
+  ],
+  "author": "First+Third",
+  "license": "MIT",
+  "dependencies": {
+    "logr": "^2.1.0",
+    "logr-cli-fancy": "^0.2.0",
+    "logr-flat": "^2.0.0",
+    "logr-reporter-bell": "0.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.9.1",
+    "eslint-config-firstandthird": "^3.1.0",
+    "eslint-plugin-import": "^2.1.0",
+    "hapi": "^16.0.2",
+    "hoek": "^4.1.1",
+    "lab": "^13.1.0"
+  }
+}
