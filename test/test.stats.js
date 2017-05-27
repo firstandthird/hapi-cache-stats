@@ -2,6 +2,7 @@
 const Hapi = require('hapi');
 const tap = require('tap');
 const register = require('../index.js');
+const async = require('async');
 
 let server;
 tap.beforeEach((done) => {
@@ -22,12 +23,18 @@ tap.beforeEach((done) => {
 });
 
 tap.test('will log delayed requests', t => {
-  const add = () => 5;
+  const oldLog = console.log;
+  const results = [];
+  console.log = (input) => {
+    results.push(input);
+  };
+  const add = function() {
+    return new Date();
+  };
   server.method('add', add, {
     cache: {
-      expiresIn: 60000,
-      staleIn: 30000,
-      staleTimeout: 10000,
+      staleIn: 1000,
+      staleTimeout: 10,
       generateTimeout: 100
     }
   });
@@ -35,18 +42,25 @@ tap.test('will log delayed requests', t => {
     method: 'get',
     path: '/',
     handler: (request, reply) => {
-      server.methods.add();
-      reply({});
+      server.methods.add(5);
+      reply({ result: true });
     }
   });
-  for (let i = 0; i < 20; i++) {
+  async.timesLimit(20, 1, (n, next) => {
     server.inject({
       method: 'get',
       url: '/',
     }, () => {
+      setTimeout(() => {
+        next();
+      }, 500);
     });
-  }
-  setTimeout(() => {
+  }, () => {
+    t.equal(results.length, 20);
+    t.notEqual(results[1].indexOf('hitRatio:'), -1);
+    t.notEqual(results[1].indexOf('staleRatio:'), -1);
+    t.notEqual(results[1].indexOf('generates:'), -1);
+    t.notEqual(results[19].indexOf('gets:'), -1);
     server.stop(t.end);
-  }, 5000);
+  });
 });
