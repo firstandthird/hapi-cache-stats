@@ -23,6 +23,7 @@
     "logr-reporter-bell": "0.0.1"
   },
   "devDependencies": {
+    "async": "^2.4.1",
     "eslint": "^3.9.1",
     "eslint-config-firstandthird": "^3.1.0",
     "eslint-plugin-import": "^2.1.0",

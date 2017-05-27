@@ -25,9 +25,9 @@ exports.register = (server, passedOptions, next) => {
       staleRatio: stats.stales / stats.gets
     };
     Object.assign(logOutput, method.cache.stats);
-    log([methodName, 'hapi-cache-stats'], method.cache.stats);
+    log([methodName, 'hapi-cache-stats'], logOutput);
   };
-
+  let running = true;
   const onTimer = () => {
     Object.keys(server.methods).forEach((key) => {
       const method = server.methods[key];
@@ -35,9 +35,12 @@ exports.register = (server, passedOptions, next) => {
         logMethod(key, method);
       }
     });
-    setTimeout(onTimer, options.interval);
+    if (running) {
+      setTimeout(onTimer, options.interval);
+    }
   };
   onTimer();
+  server.on('stop', () => { running = false; });
   next();
 };
 
