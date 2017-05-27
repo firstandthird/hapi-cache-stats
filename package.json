@@ -4,7 +4,7 @@
   "description": "Hapi plugin that logs cache stats for server methods at regular intervals",
   "main": "index.js",
   "scripts": {
-    "test": "lab test/*.js"
+    "test": "tap test/*.js --cov"
   },
   "eslintConfig": {
     "extends": "firstandthird"
@@ -28,6 +28,7 @@
     "eslint-plugin-import": "^2.1.0",
     "hapi": "^16.0.2",
     "hoek": "^4.1.1",
-    "lab": "^13.1.0"
+    "lab": "^13.1.0",
+    "tap": "^10.3.2"
   }
 }

@@ -1,11 +1,10 @@
 'use strict';
 const Hapi = require('hapi');
-const Hoek = require('hoek');
-const lab = exports.lab = require('lab').script();
+const tap = require('tap');
 const register = require('../index.js');
 
 let server;
-lab.beforeEach((done) => {
+tap.beforeEach((done) => {
   server = new Hapi.Server({
     debug: {
       log: ['hapi-cache-stats']
@@ -22,13 +21,7 @@ lab.beforeEach((done) => {
   });
 });
 
-lab.afterEach((done) => {
-  server.stop(() => {
-    done();
-  });
-});
-
-lab.test('will log delayed requests', { timeout: 10000 }, (done) => {
+tap.test('will log delayed requests', t => {
   const add = () => 5;
   server.method('add', add, {
     cache: {
@@ -54,6 +47,6 @@ lab.test('will log delayed requests', { timeout: 10000 }, (done) => {
     });
   }
   setTimeout(() => {
-    done();
+    server.stop(t.end);
   }, 5000);
 });
