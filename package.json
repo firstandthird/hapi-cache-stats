@@ -18,9 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "logr": "^2.1.0",
-    "logr-cli-fancy": "^0.2.0",
-    "logr-flat": "^2.0.0",
-    "logr-reporter-bell": "0.0.1"
+    "logr-flat": "^2.0.0"
   },
   "devDependencies": {
     "async": "^2.4.1",
@@ -28,8 +26,6 @@
     "eslint-config-firstandthird": "^3.1.0",
     "eslint-plugin-import": "^2.1.0",
     "hapi": "^16.0.2",
-    "hoek": "^4.1.1",
-    "lab": "^13.1.0",
     "tap": "^10.3.2"
   }
 }
