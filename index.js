@@ -26,6 +26,9 @@ exports.register = (server, passedOptions, next) => {
     };
     Object.assign(logOutput, method.cache.stats);
     log([methodName, 'hapi-cache-stats'], logOutput);
+    if (logOutput.hitRatio < options.threshold) {
+      log([methodName, 'hapi-cache-stats', 'warning'], `Hit ratio of ${logOutput.hitRatio} is lower than threshold of ${options.threshold}`);
+    }
   };
   let running = true;
   const onTimer = () => {

@@ -33,34 +33,34 @@ tap.test('will log delayed requests', t => {
   };
   server.method('add', add, {
     cache: {
-      staleIn: 1000,
+      expiresIn: 2000,
+      staleIn: 1500,
       staleTimeout: 10,
-      generateTimeout: 100
+      generateTimeout: 10
     }
   });
   server.route({
     method: 'get',
     path: '/',
     handler: (request, reply) => {
-      server.methods.add(5);
-      reply({ result: true });
+      reply({ result: server.methods.add(5) });
     }
   });
   async.timesLimit(20, 1, (n, next) => {
     server.inject({
       method: 'get',
       url: '/',
-    }, () => {
+    }, (response) => {
+      oldLog(response.result);
+      oldLog(response.results);
       setTimeout(() => {
         next();
       }, 500);
     });
   }, () => {
-    t.equal(results.length, 20);
-    t.notEqual(results[1].indexOf('hitRatio:'), -1);
-    t.notEqual(results[1].indexOf('staleRatio:'), -1);
-    t.notEqual(results[1].indexOf('generates:'), -1);
-    t.notEqual(results[19].indexOf('gets:'), -1);
+    t.notEqual(results[2].indexOf('hitRatio:'), -1);
+    t.notEqual(results[2].indexOf('staleRatio:'), -1);
+    t.notEqual(results[2].indexOf('generates:'), -1);
     server.stop(t.end);
   });
 });
