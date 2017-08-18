@@ -1,6 +1,6 @@
 {
   "name": "hapi-cache-stats",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Hapi plugin that logs cache stats for server methods at regular intervals",
   "main": "index.js",
   "scripts": {
@@ -16,8 +16,7 @@
   ],
   "author": "First+Third",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "async": "^2.4.1",
     "eslint": "^3.9.1",
