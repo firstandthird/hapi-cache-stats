@@ -2,7 +2,7 @@
 const defaults = {
   verbose: false,
   interval: 1000 * 60, // report rate in milliseconds
-  threshold: 50 // threshold percent beyond which to report
+  threshold: 0.5 // threshold percent beyond which to report
 };
 
 exports.register = (server, passedOptions, next) => {
