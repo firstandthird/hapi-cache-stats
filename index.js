@@ -1,19 +1,9 @@
 'use strict';
-const Logr = require('logr');
-const logrFlat = require('logr-flat');
 const defaults = {
+  verbose: false,
   interval: 1000 * 60, // report rate in milliseconds
   threshold: 50 // threshold percent beyond which to report
 };
-
-const log = Logr.createLogger({
-  type: 'flat',
-  reporters: {
-    flat: {
-      reporter: logrFlat
-    }
-  }
-});
 
 exports.register = (server, passedOptions, next) => {
   const options = {};
@@ -25,9 +15,11 @@ exports.register = (server, passedOptions, next) => {
       staleRatio: stats.stales / stats.gets
     };
     Object.assign(logOutput, method.cache.stats);
-    log([methodName, 'hapi-cache-stats'], logOutput);
+    if (options.verbose) {
+      server.log(['hapi-cache-stats', methodName], logOutput);
+    }
     if (logOutput.hitRatio < options.threshold) {
-      log([methodName, 'hapi-cache-stats', 'warning'], `Hit ratio of ${logOutput.hitRatio} is lower than threshold of ${options.threshold}`);
+      server.log(['hapi-cache-stats', methodName, 'warning'], `Hit ratio of ${logOutput.hitRatio} is lower than threshold of ${options.threshold}`);
     }
   };
   let running = true;
