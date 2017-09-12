@@ -58,13 +58,14 @@ tap.test('will log delayed requests', t => {
       }, 500);
     });
   }, () => {
+    console.log = oldLog;
     t.notEqual(results[2].indexOf('hitRatio:'), -1);
     t.notEqual(results[2].indexOf('staleRatio:'), -1);
     t.notEqual(results[2].indexOf('generates:'), -1);
     server.stop(t.end);
   });
 });
-/*
+
 tap.test('also handles nested methods', t => {
   const oldLog = console.log;
   const results = [];
@@ -101,10 +102,10 @@ tap.test('also handles nested methods', t => {
       }, 500);
     });
   }, () => {
+    console.log = oldLog;
     t.notEqual(results[2].indexOf('hitRatio:'), -1);
     t.notEqual(results[2].indexOf('staleRatio:'), -1);
     t.notEqual(results[2].indexOf('generates:'), -1);
     server.stop(t.end);
   });
 });
-*/

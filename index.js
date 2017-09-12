@@ -1,4 +1,6 @@
 'use strict';
+const flat = require('flat');
+
 const defaults = {
   verbose: false,
   interval: 1000 * 60, // report rate in milliseconds
@@ -24,8 +26,9 @@ exports.register = (server, passedOptions, next) => {
   };
   let running = true;
   const onTimer = () => {
-    Object.keys(server.methods).forEach((key) => {
-      const method = server.methods[key];
+    const methods = flat(server.methods);
+    Object.keys(methods).forEach((key) => {
+      const method = methods[key];
       if (method.cache) {
         logMethod(key, method);
       }
