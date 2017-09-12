@@ -1,5 +1,4 @@
 'use strict';
-const flat = require('flat');
 
 const defaults = {
   verbose: false,
@@ -24,15 +23,23 @@ exports.register = (server, passedOptions, next) => {
       server.log(['hapi-cache-stats', methodName, 'warning'], `Hit ratio of ${logOutput.hitRatio} is lower than threshold of ${options.threshold}`);
     }
   };
-  let running = true;
-  const onTimer = () => {
-    const methods = flat(server.methods);
-    Object.keys(methods).forEach((key) => {
-      const method = methods[key];
-      if (method.cache) {
-        logMethod(key, method);
+  const logObject = (object, prefix) => {
+    Object.keys(object).forEach((key) => {
+      const method = object[key];
+      const logKey = prefix ? `${prefix}.${key}` : key;
+      if (typeof method === 'object') {
+        logObject(method, logKey);
+      }
+      if (typeof method === 'function') {
+        if (method.cache) {
+          logMethod(logKey, method);
+        }
       }
     });
+  };
+  let running = true;
+  const onTimer = () => {
+    logObject(server.methods);
     if (running) {
       setTimeout(onTimer, options.interval);
     }

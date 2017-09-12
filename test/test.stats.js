@@ -15,6 +15,7 @@ tap.beforeEach((done) => {
   server.register({
     register,
     options: {
+      verbose: true,
       interval: 500
     }
   }, () => {
@@ -22,12 +23,16 @@ tap.beforeEach((done) => {
   });
 });
 
+tap.afterEach((done) => {
+  server.register.running = false;
+  server.stop(done);
+});
+
 tap.test('will log delayed requests', t => {
-  const oldLog = console.log;
   const results = [];
-  console.log = (input) => {
-    results.push(input);
-  };
+  server.on('log', (datum) => {
+    results.push(datum.data);
+  });
   const add = function() {
     return new Date();
   };
@@ -46,32 +51,28 @@ tap.test('will log delayed requests', t => {
       reply({ result: server.methods.add(5) });
     }
   });
-  async.timesLimit(20, 1, (n, next) => {
+  async.timesLimit(5, 1, (n, next) => {
     server.inject({
       method: 'get',
       url: '/',
     }, (response) => {
-      oldLog(response.result);
-      oldLog(response.results);
       setTimeout(() => {
         next();
       }, 500);
     });
   }, () => {
-    console.log = oldLog;
-    t.notEqual(results[2].indexOf('hitRatio:'), -1);
-    t.notEqual(results[2].indexOf('staleRatio:'), -1);
-    t.notEqual(results[2].indexOf('generates:'), -1);
-    server.stop(t.end);
+    t.notEqual(results[1].hitRatio, -1);
+    t.notEqual(results[1].staleRatio, -1);
+    t.notEqual(results[1].generates, -1);
+    t.end();
   });
 });
 
 tap.test('also handles nested methods', t => {
-  const oldLog = console.log;
   const results = [];
-  console.log = (input) => {
-    results.push(input);
-  };
+  server.on('log', (datum) => {
+    results.push(datum.data);
+  });
   const add = function() {
     return new Date();
   };
@@ -90,22 +91,19 @@ tap.test('also handles nested methods', t => {
       reply({ result: server.methods.myMethods.add(5) });
     }
   });
-  async.timesLimit(20, 1, (n, next) => {
+  async.timesLimit(5, 1, (n, next) => {
     server.inject({
       method: 'get',
       url: '/',
     }, (response) => {
-      oldLog(response.result);
-      oldLog(response.results);
       setTimeout(() => {
         next();
       }, 500);
     });
   }, () => {
-    console.log = oldLog;
-    t.notEqual(results[2].indexOf('hitRatio:'), -1);
-    t.notEqual(results[2].indexOf('staleRatio:'), -1);
-    t.notEqual(results[2].indexOf('generates:'), -1);
-    server.stop(t.end);
+    t.notEqual(results[1].hitRatio, -1);
+    t.notEqual(results[1].staleRatio, -1);
+    t.notEqual(results[1].generates, -1);
+    t.end();
   });
 });
