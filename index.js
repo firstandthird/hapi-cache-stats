@@ -1,4 +1,5 @@
 'use strict';
+
 const defaults = {
   verbose: false,
   interval: 1000 * 60, // report rate in milliseconds
@@ -22,14 +23,23 @@ exports.register = (server, passedOptions, next) => {
       server.log(['hapi-cache-stats', methodName, 'warning'], `Hit ratio of ${logOutput.hitRatio} is lower than threshold of ${options.threshold}`);
     }
   };
-  let running = true;
-  const onTimer = () => {
-    Object.keys(server.methods).forEach((key) => {
-      const method = server.methods[key];
-      if (method.cache) {
-        logMethod(key, method);
+  const logObject = (object, prefix) => {
+    Object.keys(object).forEach((key) => {
+      const method = object[key];
+      const logKey = prefix ? `${prefix}.${key}` : key;
+      if (typeof method === 'object') {
+        logObject(method, logKey);
+      }
+      if (typeof method === 'function') {
+        if (method.cache) {
+          logMethod(logKey, method);
+        }
       }
     });
+  };
+  let running = true;
+  const onTimer = () => {
+    logObject(server.methods);
     if (running) {
       setTimeout(onTimer, options.interval);
     }
