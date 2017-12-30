@@ -60,8 +60,8 @@ tap.test('will log delayed requests', async (t) => {
   t.notEqual(results[1].generates, -1);
   t.end();
 });
-/*
-tap.test('also handles nested methods', t => {
+
+tap.test('also handles nested methods', async t => {
   const results = [];
   server.events.on('log', (datum) => {
     results.push(datum.data);
@@ -82,18 +82,17 @@ tap.test('also handles nested methods', t => {
       return { result: server.methods.myMethods.add(5) };
     }
   });
-  async.timesLimit(5, 1, async(n, next) => {
+  /* eslint-disable  */
+  for (let i = 0; i < 5; i++) {
     await server.inject({
       method: 'get',
       url: '/',
     });
-    wait(500);
-    next();
-  }, () => {
-    t.notEqual(results[1].hitRatio, -1);
-    t.notEqual(results[1].staleRatio, -1);
-    t.notEqual(results[1].generates, -1);
-    t.end();
-  });
+    await wait(500);
+  }
+  /* eslint-enable */
+  t.notEqual(results[1].hitRatio, -1);
+  t.notEqual(results[1].staleRatio, -1);
+  t.notEqual(results[1].generates, -1);
+  t.end();
 });
-*/
