@@ -1,12 +1,10 @@
-'use strict';
-
 const defaults = {
   verbose: false,
   interval: 1000 * 60, // report rate in milliseconds
   threshold: 0.5 // threshold percent beyond which to report
 };
 
-exports.register = (server, passedOptions, next) => {
+const register = (server, passedOptions) => {
   const options = {};
   Object.assign(options, defaults, passedOptions);
   const logMethod = (methodName, method) => {
@@ -45,10 +43,12 @@ exports.register = (server, passedOptions, next) => {
     }
   };
   onTimer();
-  server.on('stop', () => { running = false; });
-  next();
+  server.events.on('stop', () => { running = false; });
 };
 
-exports.register.attributes = {
+exports.plugin = {
+  name: 'hapi-cache-stats',
+  register,
+  once: true,
   pkg: require('./package.json')
 };
