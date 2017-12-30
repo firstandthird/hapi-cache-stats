@@ -1,7 +1,6 @@
 const Hapi = require('hapi');
 const tap = require('tap');
 const plugin = require('../index.js');
-const async = require('async');
 let server;
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
