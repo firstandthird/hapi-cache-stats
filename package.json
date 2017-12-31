@@ -1,6 +1,6 @@
 {
   "name": "hapi-cache-stats",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Hapi plugin that logs cache stats for server methods at regular intervals",
   "main": "index.js",
   "scripts": {
