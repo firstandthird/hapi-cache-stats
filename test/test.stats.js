@@ -24,7 +24,6 @@ tap.beforeEach((done) => {
 });
 
 tap.afterEach((done) => {
-  server.register.running = false;
   server.stop(done);
 });
 

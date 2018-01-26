@@ -37,15 +37,18 @@ exports.register = (server, passedOptions, next) => {
       }
     });
   };
-  let running = true;
+  let currentTimer;
   const onTimer = () => {
     logObject(server.methods);
-    if (running) {
-      setTimeout(onTimer, options.interval);
-    }
+    currentTimer = setTimeout(onTimer, options.interval);
   };
   onTimer();
-  server.on('stop', () => { running = false; });
+  server.on('stop', () => {
+    if (currentTimer) {
+      clearTimeout(currentTimer);
+      currentTimer = false;
+    }
+  });
   next();
 };
 
