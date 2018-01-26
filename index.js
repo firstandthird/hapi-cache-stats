@@ -35,15 +35,18 @@ const register = (server, passedOptions) => {
       }
     });
   };
-  let running = true;
+  let currentTimer;
   const onTimer = () => {
     logObject(server.methods);
-    if (running) {
-      setTimeout(onTimer, options.interval);
-    }
+    currentTimer = setTimeout(onTimer, options.interval);
   };
   onTimer();
-  server.events.on('stop', () => { running = false; });
+  server.events.on('stop', () => {
+    if (currentTimer) {
+      clearTimeout(currentTimer);
+      currentTimer = false;
+    }
+  });
 };
 
 exports.plugin = {

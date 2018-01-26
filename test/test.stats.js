@@ -20,7 +20,6 @@ tap.beforeEach(async() => {
 });
 
 tap.afterEach(async() => {
-  server.register.running = false;
   await server.stop();
 });
 
