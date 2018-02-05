@@ -6,6 +6,8 @@ const defaults = {
 
 const register = (server, passedOptions) => {
   const options = {};
+  // if no methods use cache, then there is no need to run a loop monitoring them:
+  let cachesExist = false;
   Object.assign(options, defaults, passedOptions);
   const logMethod = (methodName, method) => {
     const stats = method.cache.stats;
@@ -30,6 +32,7 @@ const register = (server, passedOptions) => {
       }
       if (typeof method === 'function') {
         if (method.cache) {
+          cachesExist = true;
           logMethod(logKey, method);
         }
       }
@@ -37,10 +40,16 @@ const register = (server, passedOptions) => {
   };
   let currentTimer;
   const onTimer = () => {
+    cachesExist = false;
     logObject(server.methods);
-    currentTimer = setTimeout(onTimer, options.interval);
+    if (cachesExist) {
+      currentTimer = setTimeout(onTimer, options.interval);
+    }
   };
-  onTimer();
+  server.ext({
+    type: 'onPostStart',
+    method: onTimer
+  });
   server.events.on('stop', () => {
     if (currentTimer) {
       clearTimeout(currentTimer);
