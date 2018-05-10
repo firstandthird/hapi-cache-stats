@@ -11,6 +11,9 @@ const register = (server, passedOptions) => {
   Object.assign(options, defaults, passedOptions);
   const logMethod = (methodName, method) => {
     const stats = method.cache.stats;
+    if (stats.hits === 0 && stats.gets === 0 && stats.stales === 0) {
+      return;
+    }
     const logOutput = {
       hitRatio: stats.hits / stats.gets,
       staleRatio: stats.stales / stats.gets
