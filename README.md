@@ -1,4 +1,4 @@
-#hapi-cache-stats
+# hapi-cache-stats
 
 hapi-cache-stats is a library that monitors the ratio of hits:gets
 for your server method caches.  When a method's ratios fall below a given threshold
